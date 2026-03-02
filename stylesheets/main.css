@@ -1,0 +1,56 @@
+p {
+  color: blue;
+  font-size: 24px;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+header {
+  padding: 20px;
+}
+
+body {
+  font-size: 25px;
+}
+
+.page-container {
+  display: flex;
+
+  align-items: stretch;
+}
+
+.section-content,
+.contents {
+  padding: 20px;
+
+}
+
+
+.section-content {
+  width: 60%;
+
+  border-radius: 10px;
+  border: 2px blue;
+}
+
+.contents {
+  width: 20%;
+  background-color: #a4ceec;
+  border-radius: 10px;
+}
+
+
+.definition {
+  border: 2px dashed red;
+  background-color: #a4ceec;
+  padding-left: 40px;
+  padding-right: 40px;
+  padding-bottom: 20px;
+  margin-top: 30px;
+  margin-bottom: 30px;
+  border-radius: 10px;
+
+  scroll-margin-top: 20px;
+}

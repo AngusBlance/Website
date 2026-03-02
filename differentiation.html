@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8">
+	<title>computermath</title>
+	<link rel="stylesheet" href="stylesheets/main.css">
+	<link rel="stylesheet" href="stylesheets/prism.css">
+
+	<script async src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
+
+	<script src="scripts/prism.js"></script>
+	<script
+		src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/normalize-whitespace/prism-normalize-whitespace.min.js"></script>
+	<script src="scripts/main.js">
+	</script>
+</head>
+
+<body>
+	<div class="page-container">
+		<div class="contents" id="toc-placeholder">
+			<h2>
+				Table of Contents
+			</h2>
+			<nav>
+				<a href="/index.html">ComputerMath</a>
+				<br>
+				<a href="/differentiation.html">
+					Differentiation
+				</a>
+				<br>
+			</nav>
+		</div>
+		<div class="section-content">
+			<header>
+				<h1>
+					differentiation
+				</h1>
+				<a href="/home/angus/code/website/index.html">
+					home
+				</a><br>
+			</header>
+
+			<section class="text" id="intro">
+				<a href="https://thenumb.at/Autodiff/">https://thenumb.at/Autodiff/</a><br>
+				differentiation is a technique you apply to a maths function — instead of giving you the y for a given x
+				(f(x)), it gives you the gradient at that x.<br>
+				loads of optimisation, stats and computer maths involves this, deffo need it.<br>
+				i'll briefly go over what a derivative is, some examples of how to find it using a computer, and finally
+				what i think is the fastest and most accurate way to calculate a derivative on a computer.
+			</section>
+			<section class="text" id="para">
+				<h2>what is differentiation?</h2>
+				differentiation is the gradient of a graph. you have likely come across a gradient in school with a
+				formula as
+				the
+				difference in two y co-ordinates per the difference in two x co-ordinates, where each x and y is taken
+				from
+				two
+				points on a straight line as shown bellow.
+				$$x_2-x_1 \over y_2 - y_1$$
+				this works perfectly but only for a straight line, what if we wanted to take this for an exact point on
+				a
+				continuously changeing function? we can still use this equation but it will be very hard to get the
+				exact
+				value
+				of
+				the derivative of an exact point.<br>
+				the solution that was found for this was to re-write the above simple deffinition of a derivative and
+				make it
+				more
+				general with functions and limmits. so \(y_1, y_2\) are now f(x) and and the x's are still x's. for the
+				difference
+				we use limmits, so we can theoretically find the exact point as one point is tending to the other. this
+				equation
+				is
+				newtons quotient:
+				<div class="definition">
+					<h3 id="newtons-quotient">newtons quotient</h3>
+					$$ f'(x) = \lim_{h \to 0} \frac{f(x + h) - f(x)}{h} $$
+				</div>
+				one questions you might have is why are there no x co-ordinates in the bottom of the fraction? well this
+				is
+				after
+				simplifying it like this:
+				$$ \frac{f(x + h) - f(x)}{(x + h) - x} $$
+				as you can see the x's cancel out.<br>
+				from this we can now move onto our first basic form of differentiation.
+			</section>
+
+			<section class="text" id="finite-difference">
+				<h2>finite difference method</h2>
+				there are a number of ways to figure out the derivative just from <a href="#newtons-quotient">newtons
+					quotiant</a>.
+				the finite difference method is probably the most straght forward simple and well known method. where it
+				is
+				essentially just performing newtons-quotient on a function at a certain point. here is some example code
+				for
+				illustration:<br>
+				<pre class="line-numbers"><code class="language-python">
+class Differentiator:
+    def __init__(self, func):
+        self.func = func
+
+    def finite_difference(self, x, h=0.001):
+        numerator = self.func(x + h) - self.func(x)
+        return numerator / h
+
+
+def square(x):
+    return x**2
+
+def cube(x):
+    return x**3
+
+sq_diff = Differentiator(square)
+print(f"Derivative of x^2 at 2: {sq_diff.finite_difference(2)}")
+
+cube_diff = Differentiator(cube)
+print(f"Derivative of x^3 at 2: {cube_diff.finite_difference(2)}")
+          </code></pre>
+				<pre class="command-line language-bash" data-user="root" data-host="localhost" data-output="2-3"><code class="langus-bash">
+python3 finite_difference.py
+Derivative of x^2 at 2: 4.000999999999699
+Derivative of x^3 at 2: 12.006000999997823
+          </code></pre>
+				This is a VERY fast way of calculating a derivative, as it just does one calculation in place. But there
+				is one
+				downside, it is not very acurate, this can be seen above where the derivative of \(x^2\) at 2 is
+				calculated as
+				4.00099999... but in atuallity it is 2(2) = 4. This is due to floating point rounding errors.<br><br>
+				So now we have to ask, how can we increase the acuracy of our derivative? One way to do this would be to
+				hard
+				code everything, but when thinking of every different type of way to differentiate it quickly becomes
+				obvious
+				that this would take a crazy amount of time. Along with this, when differentiating complex problems can
+				involve
+				comleting many rules to a problem many times, which can slow things down. But dont worry there is a
+				solution to
+				all of our differentiating with a computer problems, automatic differentiation.<br><br>
+			</section>
+			<section class="text" id="autodiff">
+				<h2>Automatic Differentiation</h2>
+				Automatic differentiation (AD) is a way that we can differentiate a given function in a single step, and
+				it
+				will give an exact value for the derivative that you want. Making it as fast as possible whilst also
+				being super acurate.<br><br>
+				The first time automatic differentiation was written about and used was in the 1960's but nothing much
+				came about from it at the time, only reasently has automatic differentiation taken off and gained mass
+				popularity. The reason for this sudden popularity is ai, where finding the derivative for back
+				propagation became very important.<br><br>
+				There are a few methods for AD, all with their pros and cons. The first that we can look at it forward
+				mode AD.
+
+				<h3>Forward Mode</h3>
+				Forward mode differentiation
+				<div class="definition">
+					<h4>Dual Number</h4>
+					Dual Numbers are a core concept for forward mode AD, so knowing it is essential. It is pretty simple
+					and
+					it is deffined by these two rules:
+
+					\begin{align*}
+					\epsilon^2 &= 0 \tag{1} \label{epsilon rule 1}\\
+					\epsilon &\neq 0 \tag{2}\label{epsilon rule 2}\\
+					\end{align*}
+
+					looking through these rules you quite quickly realise this is a complicated variable, as the only
+					real
+					number that equals 0 when squared is 0 itself, however \eqref{epsilon rule 2} says that it cant be
+					this.<br>
+					you can think of it as similar to the imaginary number i, where \(i^2 = -1\) makes no sence, as the
+					\(\sqrt{-1}\) has no solution, due to no number being multiplied by itself being equal -1
+				</div>
+				<div class="proposition" id="dual number derivative proposition">
+					The most important thing about dual numbers is the following proposition
+					$$
+					f(x + \epsilon) = f(x) + \epsilon f'(x)
+					$$
+					where we can see that just by adding \(\epsilon\) to our variables we can get the derivative of any
+					function!<br>
+				</div>
+
+
+				<div class="example">
+					<br>
+					here is a quick example of theorem
+					\begin{align}
+					f(x) &= x^2 + 6x - 1 \\
+					f'(x) &= 2x + 6 \tag{*} \label{deriv}
+					\end{align}
+
+					\begin{align*}
+					f(x + \epsilon) &= (x + \epsilon)^2 + 6(x + \epsilon) - 1 \\
+					&= x^2 + 2x\epsilon + \cancel{\epsilon^2} + 6x + 6\epsilon - 1 \\
+					&= (x^2 + 6x - 1) + 2x\epsilon + 6\epsilon \quad \text{group like terms}\\
+					&= f(x) + \epsilon \underbrace{(2x + 6)}_{\text{matches } \eqref{deriv}} \\
+					f(x + \epsilon) &= f(x) + \epsilon f'(x)
+					\end{align*}
+				</div>
+				Cool! We can now reduce <br>
+				thanks to <a href="https://youtu.be/QwFLA5TrviI?si=DqqI1Jy8ORzmWoAi">computerfile</a> for this code.
+				<pre class="line-numbers"><code class="language-python">
+class ForwardAutoDiff:
+    def __init__(self, real, dual):
+        self.real = real
+        self.dual = dual
+
+    def __add__(self, other):
+        real = self.real + other.real
+        dual = self.dual + other.dual
+        return ForwardAutoDiff(real, dual)
+
+    def __mul__(self, other):
+        real = self.real * other.real
+        dual = self.real * other.dual + self.dual * other.real
+        return ForwardAutoDiff(real, dual)
+
+
+def diff(f, x):
+    return f(ForwardAutoDiff(x, 1)).dual
+
+
+def f(x):
+    return x * x + ForwardAutoDiff(6, 0) * x + ForwardAutoDiff(-1, 0)
+
+
+if __name__ == "__main__":
+    x = 3
+    print(diff(f, x))  # expected: 2x + 6 = 12
+
+          </code></pre>
+				<pre class="command-line language-bash" data-user="root" data-host="localhost" data-output="2-3"><code class="langus-bash">
+python3 forward_difference 
+13
+</code></pre>
+			</section>
+		</div>
+	</div>
+</body>
+
+</html>
