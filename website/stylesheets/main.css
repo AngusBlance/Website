@@ -13,6 +13,13 @@ header {
 
 body {
   font-size: 25px;
+  background-color: #fff5eb;
+}
+
+pre,
+code {
+  font-size: 20px !important;
+  /*to overide prism.js*/
 }
 
 .page-container {
@@ -40,7 +47,6 @@ body {
   background-color: #a4ceec;
   border-radius: 10px;
 }
-
 
 .definition {
   border: 2px dashed red;

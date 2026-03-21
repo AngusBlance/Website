@@ -4,8 +4,8 @@
 <head>
 	<meta charset="utf-8">
 	<title>computermath</title>
-	<link rel="stylesheet" href="stylesheets/main.css">
 	<link rel="stylesheet" href="stylesheets/prism.css">
+	<link rel="stylesheet" href="stylesheets/main.css">
 
 	<script async src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
 
@@ -119,7 +119,7 @@ print(f"Derivative of x^2 at 2: {sq_diff.finite_difference(2)}")
 cube_diff = Differentiator(cube)
 print(f"Derivative of x^3 at 2: {cube_diff.finite_difference(2)}")
           </code></pre>
-				<pre class="command-line language-bash" data-user="root" data-host="localhost" data-output="2-3"><code class="langus-bash">
+				<pre class="command-line language-bash" data-user="root" data-host="localhost" data-output="2-3"><code class="language-bash">
 python3 finite_difference.py
 Derivative of x^2 at 2: 4.000999999999699
 Derivative of x^3 at 2: 12.006000999997823
@@ -198,6 +198,18 @@ Derivative of x^3 at 2: 12.006000999997823
 					f(x + \epsilon) &= f(x) + \epsilon f'(x)
 					\end{align*}
 				</div>
+				some quick things before we create our code.<br>
+				<b>Addition</b>
+				$$\begin{align*}
+				&(x+x\epsilon)+(x+x\epsilon) \\
+				&=2x+2x\epsilon
+				\end{align*}$$
+
+				<b>Multiplication</b>
+				$$\begin{align*}
+				&(x+x\epsilon) \times (x+x\epsilon) \\
+				&=x^2+2x\epsilon+\cancel{\epsilon^2}
+				\end{align*}$$
 				Cool! We can now reduce <br>
 				thanks to <a href="https://youtu.be/QwFLA5TrviI?si=DqqI1Jy8ORzmWoAi">computerfile</a> for this code.
 				<pre class="line-numbers"><code class="language-python">
@@ -216,7 +228,7 @@ class ForwardAutoDiff:
         dual = self.real * other.dual + self.dual * other.real
         return ForwardAutoDiff(real, dual)
 
-
+ 
 def diff(f, x):
     return f(ForwardAutoDiff(x, 1)).dual
 
@@ -230,10 +242,32 @@ if __name__ == "__main__":
     print(diff(f, x))  # expected: 2x + 6 = 12
 
           </code></pre>
-				<pre class="command-line language-bash" data-user="root" data-host="localhost" data-output="2-3"><code class="langus-bash">
-python3 forward_difference 
+				<pre class="command-line language-bash" data-user="root" data-host="localhost" data-output="2-3"><code class="language-bash">
+python3 forward_difference.py
 13
 </code></pre>
+				code starts at line 25 where it sets x to 3 and calls diff, passing in f, the function created in line
+				21 as well as x, which we set to 3. diff then pass the ForwardAutodiff class into the f function with
+				paramaters 3 (for the x) and 1 for our dual. Looking at line 22 we will get the equation:
+				$$\begin{align*}
+				&\text{ForwardAutoDiff}(3,1) \times \text{ForwardAutoDiff}(3,1) \\
+				+\, &\text{ForwardAutoDiff}(6,0) \times \text{ForwardAutoDiff}(3,1) \\
+				+\, &\text{ForwardAutoDiff}(-1,0)
+				\end{align*}$$
+				Which thanks to <a href="https://realpython.com/operator-function-overloading/" target="_blank"
+					rel="noopener noreferer">operator overloading</a> becomes:
+				$$\begin{align*}
+				&\text{ForwardAutoDiff}(6,6)\\
+				+\, &\text{ForwardAutoDiff}(9,6)\\
+				+\, &\text{ForwardAutoDiff}(-1,0)
+				\end{align*}$$
+				due to the __mul__ method and finally:
+				$$\begin{align*}
+				&\text{ForwardAutoDiff}(14,12)\\
+				\end{align*}$$
+				due to the __add__ method So our final answer is ForwardAutoDiff(14,12) where 12 is our dual number
+				which is also the EXACT derivative of our equation!!! Where we managed to get to this answer through
+				simple maths instuctions along.
 			</section>
 		</div>
 	</div>
