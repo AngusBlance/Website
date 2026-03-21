@@ -45,7 +45,7 @@
 				<a href="https://thenumb.at/Autodiff/">https://thenumb.at/Autodiff/</a><br>
 				differentiation is a technique you apply to a maths function — instead of giving you the y for a given x
 				(f(x)), it gives you the gradient at that x.<br>
-				loads of optimisation, stats and computer maths involves this, deffo need it.<br>
+				a lot of optimisation, stats and computer maths involve this, so it's definitely worth knowing.<br>
 				i'll briefly go over what a derivative is, some examples of how to find it using a computer, and finally
 				what i think is the fastest and most accurate way to calculate a derivative on a computer.
 			</section>
@@ -57,21 +57,21 @@
 				difference in two y co-ordinates per the difference in two x co-ordinates, where each x and y is taken
 				from
 				two
-				points on a straight line as shown bellow.
+				points on a straight line as shown below.
 				$$x_2-x_1 \over y_2 - y_1$$
 				this works perfectly but only for a straight line, what if we wanted to take this for an exact point on
 				a
-				continuously changeing function? we can still use this equation but it will be very hard to get the
+				continuously changing function? we can still use this equation but it will be very hard to get the
 				exact
 				value
 				of
 				the derivative of an exact point.<br>
-				the solution that was found for this was to re-write the above simple deffinition of a derivative and
+				the solution that was found for this was to re-write the above simple definition of a derivative and
 				make it
 				more
-				general with functions and limmits. so \(y_1, y_2\) are now f(x) and and the x's are still x's. for the
+				general with functions and limits. so \(y_1, y_2\) are now f(x) and the x's are still x's. for the
 				difference
-				we use limmits, so we can theoretically find the exact point as one point is tending to the other. this
+				we use limits, so we can theoretically find the exact point as one point is tending to the other. this
 				equation
 				is
 				newtons quotient:
@@ -79,7 +79,7 @@
 					<h3 id="newtons-quotient">newtons quotient</h3>
 					$$ f'(x) = \lim_{h \to 0} \frac{f(x + h) - f(x)}{h} $$
 				</div>
-				one questions you might have is why are there no x co-ordinates in the bottom of the fraction? well this
+				one question you might have is why are there no x co-ordinates in the bottom of the fraction? well this
 				is
 				after
 				simplifying it like this:
@@ -91,9 +91,8 @@
 			<section class="text" id="finite-difference">
 				<h2>finite difference method</h2>
 				there are a number of ways to figure out the derivative just from <a href="#newtons-quotient">newtons
-					quotiant</a>.
-				the finite difference method is probably the most straght forward simple and well known method. where it
-				is
+					quotient</a>.
+				the finite difference method is probably the most straightforward and well known method — it is
 				essentially just performing newtons-quotient on a function at a certain point. here is some example code
 				for
 				illustration:<br>
@@ -125,40 +124,32 @@ Derivative of x^2 at 2: 4.000999999999699
 Derivative of x^3 at 2: 12.006000999997823
           </code></pre>
 				This is a VERY fast way of calculating a derivative, as it just does one calculation in place. But there
-				is one
-				downside, it is not very acurate, this can be seen above where the derivative of \(x^2\) at 2 is
+				is one downside — it is not very accurate. this can be seen above where the derivative of \(x^2\) at 2 is
 				calculated as
-				4.00099999... but in atuallity it is 2(2) = 4. This is due to floating point rounding errors.<br><br>
-				So now we have to ask, how can we increase the acuracy of our derivative? One way to do this would be to
-				hard
-				code everything, but when thinking of every different type of way to differentiate it quickly becomes
-				obvious
-				that this would take a crazy amount of time. Along with this, when differentiating complex problems can
-				involve
-				comleting many rules to a problem many times, which can slow things down. But dont worry there is a
-				solution to
-				all of our differentiating with a computer problems, automatic differentiation.<br><br>
+				4.00099999... but in reality it is 2(2) = 4. This is due to floating point rounding errors.<br><br>
+				So how can we increase the accuracy? One option would be to hard code everything, but with all the
+				different ways to differentiate it quickly becomes obvious that this would take a huge amount of time.
+				On top of that, complex problems can involve applying many rules many times over, which can slow things
+				down. But don't worry, there is a solution — automatic differentiation.<br><br>
 			</section>
 			<section class="text" id="autodiff">
 				<h2>Automatic Differentiation</h2>
-				Automatic differentiation (AD) is a way that we can differentiate a given function in a single step, and
-				it
-				will give an exact value for the derivative that you want. Making it as fast as possible whilst also
-				being super acurate.<br><br>
-				The first time automatic differentiation was written about and used was in the 1960's but nothing much
-				came about from it at the time, only reasently has automatic differentiation taken off and gained mass
-				popularity. The reason for this sudden popularity is ai, where finding the derivative for back
+				Automatic differentiation (AD) lets us differentiate a given function in a single step and gives an exact
+				value for the derivative — as fast as possible whilst also being super accurate.<br><br>
+				The first time automatic differentiation was written about and used was in the 1960s but nothing much
+				came of it at the time, and only recently has automatic differentiation taken off and gained mass
+				popularity. The reason for this sudden popularity is AI, where finding the derivative for back
 				propagation became very important.<br><br>
-				There are a few methods for AD, all with their pros and cons. The first that we can look at it forward
+				There are a few methods for AD, all with their pros and cons. The first that we can look at is forward
 				mode AD.
 
 				<h3>Forward Mode</h3>
-				Forward mode differentiation
+				Forward mode differentiation works using a concept called dual numbers.
 				<div class="definition">
 					<h4>Dual Number</h4>
-					Dual Numbers are a core concept for forward mode AD, so knowing it is essential. It is pretty simple
+					Dual Numbers are a core concept for forward mode AD, so knowing them is essential. It is pretty simple
 					and
-					it is deffined by these two rules:
+					it is defined by these two rules:
 
 					\begin{align*}
 					\epsilon^2 &= 0 \tag{1} \label{epsilon rule 1}\\
@@ -167,10 +158,10 @@ Derivative of x^3 at 2: 12.006000999997823
 
 					looking through these rules you quite quickly realise this is a complicated variable, as the only
 					real
-					number that equals 0 when squared is 0 itself, however \eqref{epsilon rule 2} says that it cant be
+					number that equals 0 when squared is 0 itself, however \eqref{epsilon rule 2} says that it can't be
 					this.<br>
-					you can think of it as similar to the imaginary number i, where \(i^2 = -1\) makes no sence, as the
-					\(\sqrt{-1}\) has no solution, due to no number being multiplied by itself being equal -1
+					you can think of it as similar to the imaginary number i, where \(i^2 = -1\) makes no sense, as the
+					\(\sqrt{-1}\) has no solution, due to no number being multiplied by itself being equal to -1
 				</div>
 				<div class="proposition" id="dual number derivative proposition">
 					The most important thing about dual numbers is the following proposition
@@ -184,7 +175,7 @@ Derivative of x^3 at 2: 12.006000999997823
 
 				<div class="example">
 					<br>
-					here is a quick example of theorem
+					here is a quick example of the theorem
 					\begin{align}
 					f(x) &= x^2 + 6x - 1 \\
 					f'(x) &= 2x + 6 \tag{*} \label{deriv}
@@ -210,7 +201,7 @@ Derivative of x^3 at 2: 12.006000999997823
 				&(x+x\epsilon) \times (x+x\epsilon) \\
 				&=x^2+2x\epsilon+\cancel{\epsilon^2}
 				\end{align*}$$
-				Cool! We can now reduce <br>
+				Cool! With those rules in mind, we can now write our code.<br>
 				thanks to <a href="https://youtu.be/QwFLA5TrviI?si=DqqI1Jy8ORzmWoAi">computerfile</a> for this code.
 				<pre class="line-numbers"><code class="language-python">
 class ForwardAutoDiff:
@@ -247,8 +238,8 @@ python3 forward_difference.py
 13
 </code></pre>
 				code starts at line 25 where it sets x to 3 and calls diff, passing in f, the function created in line
-				21 as well as x, which we set to 3. diff then pass the ForwardAutodiff class into the f function with
-				paramaters 3 (for the x) and 1 for our dual. Looking at line 22 we will get the equation:
+				21 as well as x, which we set to 3. diff then passes the ForwardAutoDiff class into the f function with
+				parameters 3 (for the x) and 1 for our dual. Looking at line 22 we will get the equation:
 				$$\begin{align*}
 				&\text{ForwardAutoDiff}(3,1) \times \text{ForwardAutoDiff}(3,1) \\
 				+\, &\text{ForwardAutoDiff}(6,0) \times \text{ForwardAutoDiff}(3,1) \\
@@ -265,9 +256,8 @@ python3 forward_difference.py
 				$$\begin{align*}
 				&\text{ForwardAutoDiff}(14,12)\\
 				\end{align*}$$
-				due to the __add__ method So our final answer is ForwardAutoDiff(14,12) where 12 is our dual number
-				which is also the EXACT derivative of our equation!!! Where we managed to get to this answer through
-				simple maths instuctions along.
+				due to the __add__ method. So our final answer is ForwardAutoDiff(14,12), where 12 is our dual number
+				and also the EXACT derivative of our equation!!! All through simple maths instructions alone.
 			</section>
 		</div>
 	</div>
