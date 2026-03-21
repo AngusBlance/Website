@@ -45,7 +45,7 @@
 				<a href="https://thenumb.at/Autodiff/">https://thenumb.at/Autodiff/</a><br>
 				differentiation is a technique you apply to a maths function — instead of giving you the y for a given x
 				(f(x)), it gives you the gradient at that x.<br>
-				loads of optimisation, stats and computer maths involve this, deffo need it.<br>
+				a lot of optimisation, stats and computer maths involve this, so it's definitely worth knowing.<br>
 				i'll briefly go over what a derivative is, some examples of how to find it using a computer, and finally
 				what i think is the fastest and most accurate way to calculate a derivative on a computer.
 			</section>
@@ -92,8 +92,7 @@
 				<h2>finite difference method</h2>
 				there are a number of ways to figure out the derivative just from <a href="#newtons-quotient">newtons
 					quotient</a>.
-				the finite difference method is probably the most straightforward and well known method. where it
-				is
+				the finite difference method is probably the most straightforward and well known method — it is
 				essentially just performing newtons-quotient on a function at a certain point. here is some example code
 				for
 				illustration:<br>
@@ -125,26 +124,18 @@ Derivative of x^2 at 2: 4.000999999999699
 Derivative of x^3 at 2: 12.006000999997823
           </code></pre>
 				This is a VERY fast way of calculating a derivative, as it just does one calculation in place. But there
-				is one
-				downside, it is not very accurate, this can be seen above where the derivative of \(x^2\) at 2 is
+				is one downside — it is not very accurate. this can be seen above where the derivative of \(x^2\) at 2 is
 				calculated as
 				4.00099999... but in reality it is 2(2) = 4. This is due to floating point rounding errors.<br><br>
-				So now we have to ask, how can we increase the accuracy of our derivative? One way to do this would be to
-				hard
-				code everything, but when thinking of every different type of way to differentiate it quickly becomes
-				obvious
-				that this would take a crazy amount of time. Along with this, when differentiating, complex problems can
-				involve
-				completing many rules many times, which can slow things down. But don't worry there is a
-				solution to
-				all of our differentiating with a computer problems, automatic differentiation.<br><br>
+				So how can we increase the accuracy? One option would be to hard code everything, but with all the
+				different ways to differentiate it quickly becomes obvious that this would take a huge amount of time.
+				On top of that, complex problems can involve applying many rules many times over, which can slow things
+				down. But don't worry, there is a solution — automatic differentiation.<br><br>
 			</section>
 			<section class="text" id="autodiff">
 				<h2>Automatic Differentiation</h2>
-				Automatic differentiation (AD) is a way that we can differentiate a given function in a single step, and
-				it
-				will give an exact value for the derivative that you want. Making it as fast as possible whilst also
-				being super accurate.<br><br>
+				Automatic differentiation (AD) lets us differentiate a given function in a single step and gives an exact
+				value for the derivative — as fast as possible whilst also being super accurate.<br><br>
 				The first time automatic differentiation was written about and used was in the 1960s but nothing much
 				came of it at the time, and only recently has automatic differentiation taken off and gained mass
 				popularity. The reason for this sudden popularity is AI, where finding the derivative for back
@@ -153,7 +144,7 @@ Derivative of x^3 at 2: 12.006000999997823
 				mode AD.
 
 				<h3>Forward Mode</h3>
-				Forward mode differentiation
+				Forward mode differentiation works using a concept called dual numbers.
 				<div class="definition">
 					<h4>Dual Number</h4>
 					Dual Numbers are a core concept for forward mode AD, so knowing them is essential. It is pretty simple
@@ -210,7 +201,7 @@ Derivative of x^3 at 2: 12.006000999997823
 				&(x+x\epsilon) \times (x+x\epsilon) \\
 				&=x^2+2x\epsilon+\cancel{\epsilon^2}
 				\end{align*}$$
-				Cool! We can now reduce <br>
+				Cool! With those rules in mind, we can now write our code.<br>
 				thanks to <a href="https://youtu.be/QwFLA5TrviI?si=DqqI1Jy8ORzmWoAi">computerfile</a> for this code.
 				<pre class="line-numbers"><code class="language-python">
 class ForwardAutoDiff:
@@ -265,9 +256,8 @@ python3 forward_difference.py
 				$$\begin{align*}
 				&\text{ForwardAutoDiff}(14,12)\\
 				\end{align*}$$
-				due to the __add__ method. So our final answer is ForwardAutoDiff(14,12) where 12 is our dual number
-				which is also the EXACT derivative of our equation!!! Where we managed to get to this answer through
-				simple maths instructions alone.
+				due to the __add__ method. So our final answer is ForwardAutoDiff(14,12), where 12 is our dual number
+				and also the EXACT derivative of our equation!!! All through simple maths instructions alone.
 			</section>
 		</div>
 	</div>
