@@ -18,19 +18,7 @@
 
 <body>
 	<div class="page-container">
-		<div class="contents" id="toc-placeholder">
-			<h2>
-				Table of Contents
-			</h2>
-			<nav>
-				<a href="/index.html">ComputerMath</a>
-				<br>
-				<a href="/differentiation.html">
-					Differentiation
-				</a>
-				<br>
-			</nav>
-		</div>
+		<div class="contents" id="toc-placeholder"></div>
 		<div class="section-content">
 			<header>
 				<h1>
@@ -124,7 +112,8 @@ Derivative of x^2 at 2: 4.000999999999699
 Derivative of x^3 at 2: 12.006000999997823
           </code></pre>
 				This is a VERY fast way of calculating a derivative, as it just does one calculation in place. But there
-				is one downside — it is not very accurate. this can be seen above where the derivative of \(x^2\) at 2 is
+				is one downside — it is not very accurate. this can be seen above where the derivative of \(x^2\) at 2
+				is
 				calculated as
 				4.00099999... but in reality it is 2(2) = 4. This is due to floating point rounding errors.<br><br>
 				So how can we increase the accuracy? One option would be to hard code everything, but with all the
@@ -134,7 +123,8 @@ Derivative of x^3 at 2: 12.006000999997823
 			</section>
 			<section class="text" id="autodiff">
 				<h2>Automatic Differentiation</h2>
-				Automatic differentiation (AD) lets us differentiate a given function in a single step and gives an exact
+				Automatic differentiation (AD) lets us differentiate a given function in a single step and gives an
+				exact
 				value for the derivative — as fast as possible whilst also being super accurate.<br><br>
 				The first time automatic differentiation was written about and used was in the 1960s but nothing much
 				came of it at the time, and only recently has automatic differentiation taken off and gained mass
@@ -147,7 +137,8 @@ Derivative of x^3 at 2: 12.006000999997823
 				Forward mode differentiation works using a concept called dual numbers.
 				<div class="definition">
 					<h4>Dual Number</h4>
-					Dual Numbers are a core concept for forward mode AD, so knowing them is essential. It is pretty simple
+					Dual Numbers are a core concept for forward mode AD, so knowing them is essential. It is pretty
+					simple
 					and
 					it is defined by these two rules:
 
