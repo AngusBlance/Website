@@ -24,5 +24,10 @@ def differentiation():
     return FileResponse(os.path.join(BASE_DIR, "differentiation.html"))
 
 
+@app.get("/regression.html")
+def regression():
+    return FileResponse(os.path.join(BASE_DIR, "regression.html"))
+
+
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)
