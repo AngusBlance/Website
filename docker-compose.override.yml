@@ -1,10 +1,12 @@
 services:
   db:
     image: postgres:17-alpine
+    env_file:
+      - .env
     environment:
-      POSTGRES_USER: admin
-      POSTGRES_PASSWORD: secretpassword
-      POSTGRES_DB: mydatabase
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
     volumes:
       - postgres_data:/var/lib/postgresql/data
     ports:
@@ -16,12 +18,17 @@ services:
       dockerfile: Dockerfile
     volumes:
       - ./website:/app  
-      - /app/.venv
-    command: ["uv", "run", "fastapi", "dev", "server/main.py", "--host", "0.0.0.0", "--port", "8000"] 
+o   command: ["sh", "-c", "cd /app/server && uv run python -m uvicorn main:app --host 0.0.0.0 --port ${WEBSITE_PORT:-8000}"] 
     ports:
       - "8000:8000"
+    env_file:
+      - .env
     environment:
-      - DATABASE_URL=postgresql://admin:secretpassword@db:5432/mydatabase
+      - DB_HOST=${DB_HOST}
+      - DB_PORT=${DB_PORT}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_NAME=${DB_NAME}
     depends_on:
       - db
 
