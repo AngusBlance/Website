@@ -8,4 +8,5 @@ dependencies = [
     "fastapi[standard]",
     "uvicorn",
     "psycopg2-binary",
+    "pytest",
 ]
