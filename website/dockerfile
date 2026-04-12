@@ -5,11 +5,11 @@ COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/uv
 
 WORKDIR /app
 
-COPY server/pyproject.toml server/uv.lock ./
+COPY pyproject.toml uv.lock ./
 RUN uv sync --frozen --no-dev
 
 COPY . .
 
 EXPOSE 8000
 
-CMD ["uv", "run", "fastapi", "run", "server/main.py", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["uv", "run", "fastapi", "run", "website/server/main.py", "--host", "0.0.0.0", "--port", "8000"]

@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 from typing import Any
 
 import psycopg2
@@ -31,8 +32,19 @@ class DatabaseManager:
             data = [data]
         cols = list(data[0].keys())
         placeholders = ", ".join(["%s"] * len(cols))
-        query = f"INSERT INTO {table} ({', '.join(cols)}) VALUES ({placeholders})"
-        values = [[row[col] for col in cols] for row in data]
+        quoted_cols = [f'"{col}"' for col in cols]
+        query = (
+            f'INSERT INTO "{table}" ({", ".join(quoted_cols)}) VALUES ({placeholders})'
+        )
+        values = []
+        for row in data:
+            row_values = []
+            for col in cols:
+                val = row[col]
+                if isinstance(val, (dict, list)):
+                    val = json.dumps(val)
+                row_values.append(val)
+            values.append(row_values)
         cur = self._conn.cursor()
         cur.executemany(query, values)
         self._conn.commit()
@@ -41,3 +53,26 @@ class DatabaseManager:
         cur = self._conn.cursor()
         cur.execute(query, params)
         self._conn.commit()
+
+    def create_table(self, schema: dict) -> None:
+        full_name = schema["full_name"]
+        parts = full_name.split(".")
+
+        for i in range(len(parts) - 1):
+            schema_name = ".".join(parts[: i + 1])
+            self.execute(f'CREATE SCHEMA IF NOT EXISTS "{schema_name}"')
+
+        columns = []
+        for col_name, col_def in schema["columns"].items():
+            col_sql = f'"{col_name}" {col_def["type"]}'
+            if col_def.get("primary_key"):
+                col_sql += " PRIMARY KEY"
+            if col_def.get("not_null"):
+                col_sql += " NOT NULL"
+            if col_def.get("default"):
+                col_sql += f" DEFAULT {col_def['default']}"
+            columns.append(col_sql)
+
+        table_name = ".".join(parts)
+        query = f'CREATE TABLE IF NOT EXISTS "{table_name}" ({", ".join(columns)})'
+        self.execute(query)
