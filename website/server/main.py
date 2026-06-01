@@ -6,6 +6,7 @@ from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 from database import DatabaseManager, tables
 import uvicorn
+import httpx
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -60,16 +61,27 @@ async def log_requests(request: Request, call_next):
     except json.JSONDecodeError:
         body_json = body.decode("utf-8") if body else None
 
+    ip = request.client.host if request.client else None
+    location = None
+    if ip:
+        try:
+            async with httpx.AsyncClient() as client:
+                resp = await client.get(f"http://ip-api.com/json/{ip}", timeout=3)
+                location = resp.json()
+        except Exception:
+            pass
+
     with DatabaseManager() as db:
         log_entry = {
             "fast_api_request_id": tables.fast_api_requests.next_id(db),
             "method": request.method,
             "path": request.url.path,
-            "ip": request.client.host if request.client else None,
+            "ip": ip,
             "headers": dict(request.headers),
             "body": body_json,
             "query_params": dict(request.query_params),
-            "client_host": request.client.host if request.client else None,
+            "client_host": ip,
+            "location": location,
         }
         db.append("raw.requests.fast_api_requests", log_entry)
 

@@ -11,6 +11,7 @@ FAST_API_REQUESTS_SCHEMA = {
         "body": {"type": "JSONB"},
         "query_params": {"type": "JSONB"},
         "client_host": {"type": "TEXT"},
+        "location": {"type": "JSONB"},
         "timestamp": {"type": "TIMESTAMPTZ", "default": "NOW()"},
     },
 }
