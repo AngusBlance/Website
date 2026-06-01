@@ -33,8 +33,15 @@ class DatabaseManager:
         cols = list(data[0].keys())
         placeholders = ", ".join(["%s"] * len(cols))
         quoted_cols = [f'"{col}"' for col in cols]
+
+        parts = table.split(".")
+        if len(parts) >= 2:
+            table_ref = f'"{parts[0]}"."{parts[-1]}"'
+        else:
+            table_ref = f'"{table}"'
+
         query = (
-            f'INSERT INTO "{table}" ({", ".join(quoted_cols)}) VALUES ({placeholders})'
+            f'INSERT INTO {table_ref} ({", ".join(quoted_cols)}) VALUES ({placeholders})'
         )
         values = []
         for row in data:
@@ -58,9 +65,8 @@ class DatabaseManager:
         full_name = schema["full_name"]
         parts = full_name.split(".")
 
-        for i in range(len(parts) - 1):
-            schema_name = ".".join(parts[: i + 1])
-            self.execute(f'CREATE SCHEMA IF NOT EXISTS "{schema_name}"')
+        schema_name = parts[0]
+        self.execute(f'CREATE SCHEMA IF NOT EXISTS "{schema_name}"')
 
         columns = []
         for col_name, col_def in schema["columns"].items():
@@ -73,6 +79,6 @@ class DatabaseManager:
                 col_sql += f" DEFAULT {col_def['default']}"
             columns.append(col_sql)
 
-        table_name = ".".join(parts)
-        query = f'CREATE TABLE IF NOT EXISTS "{table_name}" ({", ".join(columns)})'
+        table_name = parts[-1]
+        query = f'CREATE TABLE IF NOT EXISTS "{schema_name}"."{table_name}" ({", ".join(columns)})'
         self.execute(query)
