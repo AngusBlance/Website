@@ -25,5 +25,16 @@ services:
     depends_on:
       - db
 
+  postgrest:
+    image: postgrest/postgrest
+    ports:
+      - "3000:3000"
+    environment:
+      PGRST_DB_URI: postgres://${DB_USER}:${DB_PASSWORD}@db:${DB_PORT}/${DB_NAME}
+      PGRST_DB_SCHEMA: raw
+      PGRST_DB_ANON_ROLE: ${DB_USER}
+    depends_on:
+      - db
+
 volumes:
   postgres_data:
