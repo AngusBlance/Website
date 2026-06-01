@@ -46,6 +46,11 @@ def differentiation():
     return FileResponse(os.path.join(BASE_DIR, "differentiation.html"))
 
 
+@app.get("/server_logging.html")
+def server_logging():
+    return FileResponse(os.path.join(BASE_DIR, "server_logging.html"))
+
+
 @app.middleware("http")
 async def log_requests(request: Request, call_next):
     body = await request.body()
