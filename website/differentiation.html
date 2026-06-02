@@ -1,102 +1,86 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<head>
-	<meta charset="utf-8">
-	<title>computermath</title>
-	<link rel="stylesheet" href="stylesheets/prism.css">
-	<link rel="stylesheet" href="stylesheets/main.css">
+	<head>
+		<meta charset="utf-8">
+		<title>computermath</title>
+		<link rel="stylesheet" href="stylesheets/prism.css">
+		<link rel="stylesheet" href="stylesheets/main.css">
 
-	<script async src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
+		<script async src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
 
-	<script src="scripts/prism.js"></script>
-	<script
-		src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/normalize-whitespace/prism-normalize-whitespace.min.js"></script>
-	<script src="scripts/main.js">
-	</script>
-</head>
+		<script src="scripts/prism.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/normalize-whitespace/prism-normalize-whitespace.min.js"></script>
+		<script src="scripts/main.js">
+		</script>
+	</head>
 
-<body>
-	<div class="page-container">
-		<div class="contents" id="toc-placeholder">
-			<h2>
-				Table of Contents
-			</h2>
-			<nav>
-				<a href="/index.html">ComputerMath</a>
-				<br>
-				<a href="/differentiation.html">
-					Differentiation
-				</a>
-				<br>
-			</nav>
-		</div>
-		<div class="section-content">
-			<header>
-				<h1>
-					Differentiation
-				</h1>
-				<a href="/home/angus/code/website/index.html">
-					home
-				</a><br>
-			</header>
+	<body>
+		<div class="page-container">
+			<div class="contents" id="toc-placeholder"></div>
+			<div class="section-content">
+				<header>
+					<h1>
+						Differentiation
+					</h1>
+				</header>
 
-			<section class="text" id="intro">
-				<a href="https://thenumb.at/Autodiff/">https://thenumb.at/Autodiff/</a><br>
-				differentiation is a technique you apply to a maths function — instead of giving you the y for a given x
-				(f(x)), it gives you the gradient at that x.<br>
-				a lot of optimisation, stats and computer maths involve this, so it's definitely worth knowing.<br>
-				i'll briefly go over what a derivative is, some examples of how to find it using a computer, and finally
-				what i think is the fastest and most accurate way to calculate a derivative on a computer.
-			</section>
-			<section class="text" id="para">
-				<h2>what is differentiation?</h2>
-				differentiation is the gradient of a graph. you have likely come across a gradient in school with a
-				formula as
-				the
-				difference in two y co-ordinates per the difference in two x co-ordinates, where each x and y is taken
-				from
-				two
-				points on a straight line as shown below.
-				$$x_2-x_1 \over y_2 - y_1$$
-				this works perfectly but only for a straight line, what if we wanted to take this for an exact point on
-				a
-				continuously changing function? we can still use this equation but it will be very hard to get the
-				exact
-				value
-				of
-				the derivative of an exact point.<br>
-				the solution that was found for this was to re-write the above simple definition of a derivative and
-				make it
-				more
-				general with functions and limits. so \(y_1, y_2\) are now f(x) and the x's are still x's. for the
-				difference
-				we use limits, so we can theoretically find the exact point as one point is tending to the other. this
-				equation
-				is
-				newtons quotient:
-				<div class="definition">
-					<h3 id="newtons-quotient">newtons quotient</h3>
-					$$ f'(x) = \lim_{h \to 0} \frac{f(x + h) - f(x)}{h} $$
-				</div>
-				one question you might have is why are there no x co-ordinates in the bottom of the fraction? well this
-				is
-				after
-				simplifying it like this:
-				$$ \frac{f(x + h) - f(x)}{(x + h) - x} $$
-				as you can see the x's cancel out.<br>
-				from this we can now move onto our first basic form of differentiation.
-			</section>
+				<section class="text" id="intro">
+					<a href="https://thenumb.at/Autodiff/">https://thenumb.at/Autodiff/</a><br>
+					differentiation is a technique you apply to a maths function — instead of giving you the y for a given x
+					(f(x)), it gives you the gradient at that x.<br>
+					a lot of optimisation, stats and computer maths involve this, so it's definitely worth knowing.<br>
+					i'll briefly go over what a derivative is, some examples of how to find it using a computer, and finally
+					what i think is the fastest and most accurate way to calculate a derivative on a computer.
+				</section>
+				<section class="text" id="para">
+					<h2>what is differentiation?</h2>
+					differentiation is the gradient of a graph. you have likely come across a gradient in school with a
+					formula as
+					the
+					difference in two y co-ordinates per the difference in two x co-ordinates, where each x and y is taken
+					from
+					two
+					points on a straight line as shown below.
+					$$x_2-x_1 \over y_2 - y_1$$
+					this works perfectly but only for a straight line, what if we wanted to take this for an exact point on
+					a
+					continuously changing function? we can still use this equation but it will be very hard to get the
+					exact
+					value
+					of
+					the derivative of an exact point.<br>
+					the solution that was found for this was to re-write the above simple definition of a derivative and
+					make it
+					more
+					general with functions and limits. so \(y_1, y_2\) are now f(x) and the x's are still x's. for the
+					difference
+					we use limits, so we can theoretically find the exact point as one point is tending to the other. this
+					equation
+					is
+					newtons quotient:
+					<div class="definition">
+						<h3 id="newtons-quotient">newtons quotient</h3>
+						$$ f'(x) = \lim_{h \to 0} \frac{f(x + h) - f(x)}{h} $$
+					</div>
+					one question you might have is why are there no x co-ordinates in the bottom of the fraction? well this
+					is
+					after
+					simplifying it like this:
+					$$ \frac{f(x + h) - f(x)}{(x + h) - x} $$
+					as you can see the x's cancel out.<br>
+					from this we can now move onto our first basic form of differentiation.
+				</section>
 
-			<section class="text" id="finite-difference">
-				<h2>finite difference method</h2>
-				there are a number of ways to figure out the derivative just from <a href="#newtons-quotient">newtons
-					quotient</a>.
-				the finite difference method is probably the most straightforward and well known method — it is
-				essentially just performing newtons-quotient on a function at a certain point. here is some example code
-				for
-				illustration:<br>
-				<pre class="line-numbers"><code class="language-python">
+				<section class="text" id="finite-difference">
+					<h2>finite difference method</h2>
+					there are a number of ways to figure out the derivative just from <a href="#newtons-quotient">newtons
+						quotient</a>.
+					the finite difference method is probably the most straightforward and well known method — it is
+					essentially just performing newtons-quotient on a function at a certain point. here is some example code
+					for
+					illustration:<br>
+					<pre class="line-numbers"><code class="language-python">
 class Differentiator:
     def __init__(self, func):
         self.func = func
@@ -124,86 +108,86 @@ Derivative of x^2 at 2: 4.000999999999699
 Derivative of x^3 at 2: 12.006000999997823
           </code></pre>
 				This is a VERY fast way of calculating a derivative, as it just does one calculation in place. But there
-				is one downside — it is not very accurate. this can be seen above where the derivative of \(x^2\) at 2 is
-				calculated as
-				4.00099999... but in reality it is 2(2) = 4. This is due to floating point rounding errors.<br><br>
-				So how can we increase the accuracy? One option would be to hard code everything, but with all the
-				different ways to differentiate it quickly becomes obvious that this would take a huge amount of time.
-				On top of that, complex problems can involve applying many rules many times over, which can slow things
-				down. But don't worry, there is a solution — automatic differentiation.<br><br>
-			</section>
-			<section class="text" id="autodiff">
-				<h2>Automatic Differentiation</h2>
-				Automatic differentiation (AD) lets us differentiate a given function in a single step and gives an exact
-				value for the derivative — as fast as possible whilst also being super accurate.<br><br>
-				The first time automatic differentiation was written about and used was in the 1960s but nothing much
-				came of it at the time, and only recently has automatic differentiation taken off and gained mass
-				popularity. The reason for this sudden popularity is AI, where finding the derivative for back
-				propagation became very important.<br><br>
-				There are a few methods for AD, all with their pros and cons. The first that we can look at is forward
-				mode AD.
+					is one downside — it is not very accurate. this can be seen above where the derivative of \(x^2\) at 2 is
+					calculated as
+					4.00099999... but in reality it is 2(2) = 4. This is due to floating point rounding errors.<br><br>
+					So how can we increase the accuracy? One option would be to hard code everything, but with all the
+					different ways to differentiate it quickly becomes obvious that this would take a huge amount of time.
+					On top of that, complex problems can involve applying many rules many times over, which can slow things
+					down. But don't worry, there is a solution — automatic differentiation.<br><br>
+				</section>
+				<section class="text" id="autodiff">
+					<h2>Automatic Differentiation</h2>
+					Automatic differentiation (AD) lets us differentiate a given function in a single step and gives an exact
+					value for the derivative — as fast as possible whilst also being super accurate.<br><br>
+					The first time automatic differentiation was written about and used was in the 1960s but nothing much
+					came of it at the time, and only recently has automatic differentiation taken off and gained mass
+					popularity. The reason for this sudden popularity is AI, where finding the derivative for back
+					propagation became very important.<br><br>
+					There are a few methods for AD, all with their pros and cons. The first that we can look at is forward
+					mode AD.
 
-				<h3>Forward Mode</h3>
-				Forward mode differentiation works using a concept called dual numbers.
-				<div class="definition">
-					<h4>Dual Number</h4>
-					Dual Numbers are a core concept for forward mode AD, so knowing them is essential. It is pretty simple
-					and
-					it is defined by these two rules:
+					<h3>Forward Mode</h3>
+					Forward mode differentiation works using a concept called dual numbers.
+					<div class="definition">
+						<h4>Dual Number</h4>
+						Dual Numbers are a core concept for forward mode AD, so knowing them is essential. It is pretty simple
+						and
+						it is defined by these two rules:
+						
+						\begin{align*}
+						\epsilon^2 &= 0 \tag{1} \label{epsilon rule 1}\\
+						\epsilon &\neq 0 \tag{2}\label{epsilon rule 2}\\
+						\end{align*}
+						
+						looking through these rules you quite quickly realise this is a complicated variable, as the only
+						real
+						number that equals 0 when squared is 0 itself, however \eqref{epsilon rule 2} says that it can't be
+						this.<br>
+						you can think of it as similar to the imaginary number i, where \(i^2 = -1\) makes no sense, as the
+						\(\sqrt{-1}\) has no solution, due to no number being multiplied by itself being equal to -1
+					</div>
+					<div class="proposition" id="dual number derivative proposition">
+						The most important thing about dual numbers is the following proposition
+						$$
+						f(x + \epsilon) = f(x) + \epsilon f'(x)
+						$$
+						where we can see that just by adding \(\epsilon\) to our variables we can get the derivative of any
+						function!<br>
+					</div>
 
-					\begin{align*}
-					\epsilon^2 &= 0 \tag{1} \label{epsilon rule 1}\\
-					\epsilon &\neq 0 \tag{2}\label{epsilon rule 2}\\
-					\end{align*}
+					<div class="example">
+						<br>
+						here is a quick example of the theorem
+						\begin{align}
+						f(x) &= x^2 + 6x - 1 \\
+						f'(x) &= 2x + 6 \tag{*} \label{deriv}
+						\end{align}
+						
+						\begin{align*}
+						f(x + \epsilon) &= (x + \epsilon)^2 + 6(x + \epsilon) - 1 \\
+						&= x^2 + 2x\epsilon + \cancel{\epsilon^2} + 6x + 6\epsilon - 1 \\
+						&= (x^2 + 6x - 1) + 2x\epsilon + 6\epsilon \quad \text{group like terms}\\
+						&= f(x) + \epsilon \underbrace{(2x + 6)}_{\text{matches } \eqref{deriv}} \\
+						f(x + \epsilon) &= f(x) + \epsilon f'(x)
+						\end{align*}
+					</div>
+					some quick things before we create our code.<br>
+					<b>Addition</b>
+					$$\begin{align*}
+					&(x+x\epsilon)+(x+x\epsilon) \\
+					&=2x+2x\epsilon
+					\end{align*}$$
 
-					looking through these rules you quite quickly realise this is a complicated variable, as the only
-					real
-					number that equals 0 when squared is 0 itself, however \eqref{epsilon rule 2} says that it can't be
-					this.<br>
-					you can think of it as similar to the imaginary number i, where \(i^2 = -1\) makes no sense, as the
-					\(\sqrt{-1}\) has no solution, due to no number being multiplied by itself being equal to -1
-				</div>
-				<div class="proposition" id="dual number derivative proposition">
-					The most important thing about dual numbers is the following proposition
-					$$
-					f(x + \epsilon) = f(x) + \epsilon f'(x)
-					$$
-					where we can see that just by adding \(\epsilon\) to our variables we can get the derivative of any
-					function!<br>
-				</div>
-
-
-				<div class="example">
-					<br>
-					here is a quick example of the theorem
-					\begin{align}
-					f(x) &= x^2 + 6x - 1 \\
-					f'(x) &= 2x + 6 \tag{*} \label{deriv}
-					\end{align}
-
-					\begin{align*}
-					f(x + \epsilon) &= (x + \epsilon)^2 + 6(x + \epsilon) - 1 \\
-					&= x^2 + 2x\epsilon + \cancel{\epsilon^2} + 6x + 6\epsilon - 1 \\
-					&= (x^2 + 6x - 1) + 2x\epsilon + 6\epsilon \quad \text{group like terms}\\
-					&= f(x) + \epsilon \underbrace{(2x + 6)}_{\text{matches } \eqref{deriv}} \\
-					f(x + \epsilon) &= f(x) + \epsilon f'(x)
-					\end{align*}
-				</div>
-				some quick things before we create our code.<br>
-				<b>Addition</b>
-				$$\begin{align*}
-				&(x+x\epsilon)+(x+x\epsilon) \\
-				&=2x+2x\epsilon
-				\end{align*}$$
-
-				<b>Multiplication</b>
-				$$\begin{align*}
-				&(x+x\epsilon) \times (x+x\epsilon) \\
-				&=x^2+2x\epsilon+\cancel{\epsilon^2}
-				\end{align*}$$
-				Cool! With those rules in mind, we can now write our code.<br>
-				thanks to <a href="https://youtu.be/QwFLA5TrviI?si=DqqI1Jy8ORzmWoAi">computerfile</a> for this code.
-				<pre class="line-numbers"><code class="language-python">
+					<b>Multiplication</b>
+					$$\begin{align*}
+					&(x+x\epsilon) \times (x+x\epsilon) \\
+					&=x^2+2x\epsilon+\cancel{\epsilon^2}
+					\end{align*}$$
+					Cool! With those rules in mind, we can now write our code.<br>
+					thanks to <a href="https://youtu.be/QwFLA5TrviI?si=DqqI1Jy8ORzmWoAi">computerfile</a>
+					for this code.
+					<pre class="line-numbers"><code class="language-python">
 class ForwardAutoDiff:
     def __init__(self, real, dual):
         self.real = real
@@ -237,30 +221,30 @@ if __name__ == "__main__":
 python3 forward_difference.py
 13
 </code></pre>
-				code starts at line 25 where it sets x to 3 and calls diff, passing in f, the function created in line
-				21 as well as x, which we set to 3. diff then passes the ForwardAutoDiff class into the f function with
-				parameters 3 (for the x) and 1 for our dual. Looking at line 22 we will get the equation:
-				$$\begin{align*}
-				&\text{ForwardAutoDiff}(3,1) \times \text{ForwardAutoDiff}(3,1) \\
-				+\, &\text{ForwardAutoDiff}(6,0) \times \text{ForwardAutoDiff}(3,1) \\
-				+\, &\text{ForwardAutoDiff}(-1,0)
-				\end{align*}$$
-				Which thanks to <a href="https://realpython.com/operator-function-overloading/" target="_blank"
-					rel="noopener noreferer">operator overloading</a> becomes:
-				$$\begin{align*}
-				&\text{ForwardAutoDiff}(6,6)\\
-				+\, &\text{ForwardAutoDiff}(9,6)\\
-				+\, &\text{ForwardAutoDiff}(-1,0)
-				\end{align*}$$
-				due to the __mul__ method and finally:
-				$$\begin{align*}
-				&\text{ForwardAutoDiff}(14,12)\\
-				\end{align*}$$
-				due to the __add__ method. So our final answer is ForwardAutoDiff(14,12), where 12 is our dual number
-				and also the EXACT derivative of our equation!!! All through simple maths instructions alone.
-			</section>
+				Code starts at line 25 where it sets x to 3 and calls diff, passing in f, the function created in line
+					21 as well as x, which we set to 3. diff then passes the ForwardAutoDiff class into the f function with
+					parameters 3 (for the x) and 1 for our dual. Looking at line 22 we will get the equation:
+					$$\begin{align*}
+					&\text{ForwardAutoDiff}(3,1) \times \text{ForwardAutoDiff}(3,1) \\
+					+\, &\text{ForwardAutoDiff}(6,0) \times \text{ForwardAutoDiff}(3,1) \\
+					+\, &\text{ForwardAutoDiff}(-1,0)
+					\end{align*}$$
+					Which thanks to <a href="https://realpython.com/operator-function-overloading/" target="_blank" rel="noopener noreferer">operator overloading</a>
+					becomes:
+					$$\begin{align*}
+					&\text{ForwardAutoDiff}(6,6)\\
+					+\, &\text{ForwardAutoDiff}(9,6)\\
+					+\, &\text{ForwardAutoDiff}(-1,0)
+					\end{align*}$$
+					due to the __mul__ method and finally:
+					$$\begin{align*}
+					&\text{ForwardAutoDiff}(14,12)\\
+					\end{align*}$$
+					due to the __add__ method. So our final answer is ForwardAutoDiff(14,12), where 12 is our dual number
+					and also the EXACT derivative of our equation!!! All through simple maths instructions alone.
+				</section>
+			</div>
 		</div>
-	</div>
-</body>
-
+	</body>
 </html>
+
