@@ -26,7 +26,7 @@
 		<div class="contents" id="toc-placeholder"></div>
 		<div class="section-content">
 			<aside class="under-construction">
-				<h3>🚨 UNDER CONSTRUCTION 🚨</h3><br>I am currently creating this page. It does not make sence right now
+				<h3>🚨 UNDER CONSTRUCTION 🚨</h3><br>I am currently creating this page. It does not make sense right now
 				and I have just started it
 			</aside>
 			<header>
@@ -38,8 +38,8 @@
 				</h2>
 				<section class="text" id="intro">
 					There's always been this narrative that companies and websites are stealing our data. It's gotten so
-					prevalent that we now have laws requiring us to accept or decline cookies as well as trillion dollar
-					company's having to testify to congress about what data it has and what it is doing with it.<br>
+					prevalent that we now have laws requiring us to accept or decline cookies, as well as trillion dollar
+					companies having to testify to congress about what data they hold and what they're doing with it.<br>
 					As I've gotten deeper into computer science, web development, and data engineering, I've come to
 					understand what information you're actually giving away when you visit a website <b>even when you
 						reject all cookies!</b>. The purpose of this page is to break down what data you're sharing
@@ -48,9 +48,9 @@
 				</section>
 			</header>
 			<section class="text">
-				<h2>What Data Do Website's Need to Function?</h2>
-				Every single time you click on a website there is an exchange of information, the website needs to
-				identify your computer, know what you want to do and then send files back to your browser
+				<h2>What Data Do Websites Need to Function?</h2>
+				Every single time you visit a website there is an exchange of information. The website needs to
+				identify your computer, know what you want to do, and then send files back to your browser
 				(usually HTML and CSS). The data your browser has to send to the website is called a request, and
 				the server records these as request logs. An example of what one looks like is shown below:
 			</section>
@@ -69,31 +69,29 @@
     "query_params": {},
     "timestamp": "2026-06-03T10:23:41+00:00"
 }</code></pre>
-			What we get here is a method (what the user wants from our webserver) where the user is trying to get the
-			file/differentiation.html. We also have the ip of the computer that is trying to do this right bellow, this
-			is used to identify who is trying to access your server. Along with this there are a few extra pieces of
-			data, such as the website url (host), the browser used (user-agent) and the language the website is loaded
+			What we get here is a method (what the user wants from our webserver), where the user is trying to get the
+			file /differentiation.html. We also have the IP of the computer making the request just below, which
+			is used to identify who is trying to access your server. On top of that there are a few extra pieces of
+			data, such as the website URL (host), the browser being used (user-agent), and the language the website is loaded
 			in.<br>
-			So for this is not that crazy, non of this is personal or identafiable information I can't say who this
-			person is trying to access the webserver, I cant say where they live or anything personal what so ever.
+			So far this is not that crazy. None of this is personal or identifiable information. I can't tell who this
+			person is, where they live, or anything personal at all.
 			<h3>Request Logs</h3>
 			<div id="logs-container">Loading logs...</div>
-			<h3>Why Do Website's need this data?</h3>
-			This data is essential to webserver's as it can help ban molitias people from ever trying to bring harm to
-			thier website. For instance say a bad fellow is trying to go onto your webserver and they are leaving nasty
-			comment's like "you smell.". Well you probably would not like this person to be allowed access to your serer
-			files and you would not like him scaring other people away. So we want to not allow them to access your
-			website whilst letting other on. For this we can IP ban them, where our webserver will collect his request
-			to join your website and then not allow him to access any of it's file thus preventing them from being mean
-			to you or anyone on your website.
+			<h3>Why Do Websites Need This Data?</h3>
+			This data is essential to webservers as it can help ban malicious people from bringing harm to
+			your website. Say a bad actor is accessing your webserver and leaving nasty
+			comments like "you smell." You probably don't want this person getting access to your server
+			files, or scaring other people away. So we want to block them while letting everyone else through. We can do this by IP banning them, where our webserver collects their request
+			and then refuses to serve any of its files, preventing them from being mean
+			to you or anyone else on your website.
 			<h2>Visitor Map</h2>
 
-			First of all, we can get somebody's rough location using thier IP, this is because internet service
-			providers (ISP's) are given IP blocks by regonal registary's and this is public information. For example
-			here is a map with the location of the last so many people visiting this page:
+			First of all, we can get somebody's rough location using their IP. This is because internet service
+			providers (ISPs) are assigned IP blocks by regional registries, and this is all public information. Here
+			is a map showing the location of the last few people to visit this page:
 			<div id="visitor-map"></div>
-			This is a little bit scary, but the location's are very rough so it is not too crazy, but this is still
-			valuable data non the less, a simple example would be serving personalised adds based on location.<br>
+			This is a little bit scary, but the locations are very rough so it is not too wild. Still, it is valuable data. A simple example would be serving personalised ads based on location.<br>
 		</div>
 	</div>
 </body>

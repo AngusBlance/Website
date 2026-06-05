@@ -1,8 +1,13 @@
 Obsidian_Vault/
-a.out
-system-prompt.md
-.env
 
-#claude stuff
+#python
+.env
+__pycache__
+
+#cpp
+a.out
+
+#claude 
 .claude
 CLAUDE.md
+system-prompt.md
