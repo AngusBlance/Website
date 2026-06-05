@@ -52,6 +52,18 @@ def server_logging():
     return FileResponse(os.path.join(BASE_DIR, "server_logging.html"))
 
 
+@app.get("/api/{path:path}")
+async def proxy_postgrest(path: str, request: Request):
+    query_string = request.url.query
+    url = f"http://postgrest:3000/{path}"
+    if query_string:
+        url += f"?{query_string}"
+
+    async with httpx.AsyncClient() as client:
+        resp = await client.get(url)
+        return resp.json()
+
+
 @app.middleware("http")
 async def log_requests(request: Request, call_next):
     body = await request.body()
@@ -61,7 +73,7 @@ async def log_requests(request: Request, call_next):
     except json.JSONDecodeError:
         body_json = body.decode("utf-8") if body else None
 
-    ip = request.client.host if request.client else None
+    ip = request.headers.get("x-forwarded-for") or (request.client.host if request.client else None)
     location = None
     if ip:
         try:

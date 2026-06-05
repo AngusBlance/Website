@@ -60,3 +60,17 @@ code {
 
   scroll-margin-top: 20px;
 }
+
+.under-construction {
+  background-color: #fde8e8;
+  border: 10px solid transparent;
+  border-image: repeating-linear-gradient(-45deg,
+      #efff0f,
+      #efff0f 14px,
+      #111111 14px,
+      #111111 28px) 10;
+  padding: 20px 28px;
+  text-align: center;
+  margin: 24px 0;
+  color: #7a0000;
+}
