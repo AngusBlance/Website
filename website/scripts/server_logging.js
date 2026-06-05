@@ -55,8 +55,11 @@ async function initMap(logs) {
 
 async function genarateMapAndTable() {
   try {
-    const response = await fetch('/api/fast_api_requests?order=timestamp.desc&limit=10&location->lat=not.is.null&location->lon=not.is.null');
+    const response = await fetch('/api/fast_api_requests?order=timestamp.desc&limit=50');
     const data = await response.json();
+    if (!Array.isArray(data)) {
+      throw new Error(`Unexpected response: ${JSON.stringify(data)}`);
+    }
     initTable(data);
     await initMap(data);
   } catch (error) {
