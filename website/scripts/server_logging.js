@@ -40,7 +40,7 @@ async function initMap(logs) {
     .append('title')
     .text(d => {
       const label = [d.location.city, d.location.country].filter(Boolean).join(', ');
-      return `${label} — ${d.ip}\n${new Date(d.timestamp).toLocaleString()}`;
+      return `${label}\n${new Date(d.timestamp).toLocaleString()}`;
     });
 
   const zoom = d3.zoom()
@@ -89,7 +89,7 @@ function initTable(logs) {
       <td>${timestamp}</td>
       <td>${log.method}</td>
       <td>${log.path}</td>
-      <td>${log.ip}</td>
+      <td><span class="redacted" title="IP redacted">████</span></td>
       <td>${userAgent}</td>
       <td>${country}</td>
       <td>${city}</td>
