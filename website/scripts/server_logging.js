@@ -1,4 +1,4 @@
-async function initMap(logs) {
+async function initMap(visitors) {
   const container = document.getElementById('visitor-map');
   const width = container.clientWidth || 800;
   const height = Math.round(width * 0.5);
@@ -29,18 +29,18 @@ async function initMap(logs) {
     .attr('stroke', '#aaa')
     .attr('stroke-width', 0.5);
 
-  const located = logs.filter(l => l.location?.lat != null && l.location?.lon != null);
+  const located = visitors.filter(v => v.lat != null && v.lon != null);
 
   g.selectAll('circle')
     .data(located)
     .join('circle')
-    .attr('cx', d => projection([d.location.lon, d.location.lat])[0])
-    .attr('cy', d => projection([d.location.lon, d.location.lat])[1])
+    .attr('cx', d => projection([d.lon, d.lat])[0])
+    .attr('cy', d => projection([d.lon, d.lat])[1])
     .attr('r', 5)
     .append('title')
     .text(d => {
-      const label = [d.location.city, d.location.country].filter(Boolean).join(', ');
-      return `${label}\n${new Date(d.timestamp).toLocaleString()}`;
+      const label = [d.city, d.country].filter(Boolean).join(', ');
+      return `${label}\n${d.visits} visit${d.visits !== 1 ? 's' : ''}`;
     });
 
   const zoom = d3.zoom()
@@ -53,46 +53,68 @@ async function initMap(logs) {
   svg.call(zoom);
 }
 
+function groupByIp(logs) {
+  const map = new Map();
+  for (const log of logs) {
+    const key = log.ip;
+    if (!map.has(key)) {
+      map.set(key, {
+        firstSeen: log.timestamp,
+        lastSeen: log.timestamp,
+        visits: 0,
+        country: log.location?.country || '—',
+        city: log.location?.city || '—',
+        lat: log.location?.lat ?? null,
+        lon: log.location?.lon ?? null,
+        userAgent: log.headers?.['user-agent'] || '—',
+      });
+    }
+    const entry = map.get(key);
+    entry.visits++;
+    if (log.timestamp < entry.firstSeen) entry.firstSeen = log.timestamp;
+    if (log.timestamp > entry.lastSeen) entry.lastSeen = log.timestamp;
+  }
+  return Array.from(map.values())
+    .sort((a, b) => new Date(b.lastSeen) - new Date(a.lastSeen))
+    .slice(0, 10);
+}
+
 async function genarateMapAndTable() {
   try {
-    const response = await fetch('/api/fast_api_requests?order=timestamp.desc&limit=50');
+    const response = await fetch('/api/fast_api_requests?path=eq./server_logging.html&order=timestamp.desc&limit=500');
     const data = await response.json();
     if (!Array.isArray(data)) {
       throw new Error(`Unexpected response: ${JSON.stringify(data)}`);
     }
-    initTable(data);
-    await initMap(data);
+    const visitors = groupByIp(data);
+    initTable(visitors);
+    await initMap(visitors);
   } catch (error) {
     console.error('Error fetching logs:', error);
     document.getElementById('logs-container').innerHTML = '<p>Error loading logs</p>';
   }
 }
 
-function initTable(logs) {
+function initTable(visitors) {
   const container = document.getElementById('logs-container');
-  if (!logs || logs.length === 0) {
-    container.innerHTML = '<p>No logs found</p>';
+  if (!visitors || visitors.length === 0) {
+    container.innerHTML = '<p>No visitors found</p>';
     return;
   }
 
   let html = '<table class="logs-table"><thead><tr>';
-  html += '<th>Timestamp</th><th>Method</th><th>Path</th><th>IP</th><th>User-Agent</th><th>Country</th><th>City</th>';
+  html += '<th>Visitor</th><th>Visits</th><th>First Seen</th><th>Last Seen</th><th>Country</th><th>City</th><th>Browser</th>';
   html += '</tr></thead><tbody>';
 
-  logs.forEach(log => {
-    const timestamp = new Date(log.timestamp).toLocaleString();
-    const userAgent = log.headers?.['user-agent'] || '—';
-    const country = log.location?.country || '—';
-    const city = log.location?.city || '—';
-
+  visitors.forEach((v, i) => {
     html += `<tr>
-      <td>${timestamp}</td>
-      <td>${log.method}</td>
-      <td>${log.path}</td>
-      <td><span class="redacted" title="IP redacted">████</span></td>
-      <td>${userAgent}</td>
-      <td>${country}</td>
-      <td>${city}</td>
+      <td><span class="redacted" title="IP redacted">Visitor ${i + 1}</span></td>
+      <td>${v.visits}</td>
+      <td>${new Date(v.firstSeen).toLocaleString()}</td>
+      <td>${new Date(v.lastSeen).toLocaleString()}</td>
+      <td>${v.country}</td>
+      <td>${v.city}</td>
+      <td>${v.userAgent}</td>
     </tr>`;
   });
 

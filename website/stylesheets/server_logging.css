@@ -53,10 +53,9 @@
 .redacted {
 	display: inline-block;
 	background-color: #111;
-	color: transparent;
+	color: #111;
 	border-radius: 2px;
 	user-select: none;
-	min-width: 8ch;
-	height: 1em;
+	padding: 0 4px;
 	vertical-align: middle;
 }
