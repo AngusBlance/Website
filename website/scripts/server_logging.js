@@ -103,12 +103,12 @@ function initTable(visitors) {
   }
 
   let html = '<table class="logs-table"><thead><tr>';
-  html += '<th>Visitor</th><th>Visits</th><th>First Seen</th><th>Last Seen</th><th>Country</th><th>City</th><th>Browser</th>';
+  html += '<th>IP</th><th>Visits</th><th>First Seen</th><th>Last Seen</th><th>Country</th><th>City</th><th>Browser</th>';
   html += '</tr></thead><tbody>';
 
   visitors.forEach((v, i) => {
     html += `<tr>
-      <td><span class="redacted" title="IP redacted">Visitor ${i + 1}</span></td>
+      <td><span class="redacted" title="IP redacted">████████</span></td>
       <td>${v.visits}</td>
       <td>${new Date(v.firstSeen).toLocaleString()}</td>
       <td>${new Date(v.lastSeen).toLocaleString()}</td>
