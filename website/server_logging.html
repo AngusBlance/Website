@@ -1,59 +1,58 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<head>
-	<meta charset="utf-8">
-	<title>computermath</title>
-	<link rel="stylesheet" href="stylesheets/prism.css">
-	<link rel="stylesheet" href="stylesheets/main.css">
-	<link rel="stylesheet" href="stylesheets/server_logging.css">
+	<head>
+		<meta charset="utf-8">
+		<title>computermath</title>
+		<link rel="stylesheet" href="stylesheets/prism.css">
+		<link rel="stylesheet" href="stylesheets/main.css">
+		<link rel="stylesheet" href="stylesheets/server_logging.css">
 
-	<script async src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
+		<script async src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
 
-	<script src="scripts/prism.js"></script>
-	<script
-		src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/normalize-whitespace/prism-normalize-whitespace.min.js"></script>
-	<script src="scripts/main.js">
-	</script>
-	<script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
-	<script src="https://cdn.jsdelivr.net/npm/topojson-client@3"></script>
-	<script src="scripts/server_logging.js">
-	</script>
-</head>
+		<script src="scripts/prism.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/normalize-whitespace/prism-normalize-whitespace.min.js"></script>
+		<script src="scripts/main.js">
+		</script>
+		<script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+		<script src="https://cdn.jsdelivr.net/npm/topojson-client@3"></script>
+		<script src="scripts/server_logging.js">
+		</script>
+	</head>
 
-<body>
-	<div class="page-container">
-		<div class="contents" id="toc-placeholder"></div>
-		<div class="section-content">
-			<aside class="under-construction">
-				<h3>🚨 UNDER CONSTRUCTION 🚨</h3><br>I am currently creating this page. It does not make sense right now
-				and I have just started it
-			</aside>
-			<header>
-				<h1>
-					Server Logging
-				</h1>
-				<h2>
-					Introduction
-				</h2>
-				<section class="text" id="intro">
-					There's always been this narrative that companies and websites are stealing our data. It's gotten so
-					prevalent that we now have laws requiring us to accept or decline cookies, as well as trillion dollar
-					companies having to testify to congress about what data they hold and what they're doing with it.<br>
-					As I've gotten deeper into computer science, web development, and data engineering, I've come to
-					understand what information you're actually giving away when you visit a website <b>even when you
-						reject all cookies!</b>. The purpose of this page is to break down what data you're sharing
-					regardless of which cookies you accept, why websites need this data, and what could go wrong if it
-					falls into the wrong hands.
-				</section>
-			</header>
-			<section class="text">
-				<h2>What Data Do Websites Need to Function?</h2>
-				Every single time you visit a website there is an exchange of information. The website needs to
-				identify your computer, know what you want to do, and then send files back to your browser
-				(usually HTML and CSS). The data your browser has to send to the website is called a request, and
-				the server records these as request logs. An example of what one looks like is shown below:
-			</section>
+	<body>
+		<div class="page-container">
+			<div class="contents" id="toc-placeholder"></div>
+			<div class="section-content">
+				<aside class="under-construction">
+					<h3>🚨 UNDER CONSTRUCTION 🚨</h3><br>I am currently working on this page, so it might not make much sense
+					yet. I've only just started it.
+				</aside>
+				<header>
+					<h1>
+						Server Logging
+					</h1>
+					<h2>
+						Introduction
+					</h2>
+					<section class="text" id="intro">
+						There's always been this narrative that companies and websites are stealing our data. It's gotten so
+						prevalent that we now have laws requiring us to accept or decline cookies, as well as trillion dollar
+						companies having to testify to congress about what data they hold and what they're doing with it.<br>
+						As I've gotten deeper into computer science, web development, and data engineering, I've come to
+						understand what information you're actually giving away when you visit a website <b>even when you
+							reject all cookies!</b>
+						The purpose of this page is to break down what data you're sharing
+						regardless of which cookies you accept, why websites need this data, and what could go wrong if it
+						falls into the wrong hands.
+					</section>
+				</header>
+				<section class="text">
+					<h2>What Data Do Websites Need to Function?</h2>
+					Every single time you visit a website there is an exchange of information. The website needs to
+					identify your computer, know what you want to do, and then send files back to your browser
+					(usually HTML and CSS). The data your browser has to send to the website is called a request, and
+					the server records these as request logs. An example of what one looks like is shown below:
 			<pre class="line-numbers"><code class="language-json">{
     "method": "GET",
     "path": "/differentiation.html",
@@ -69,31 +68,75 @@
     "query_params": {},
     "timestamp": "2026-06-03T10:23:41+00:00"
 }</code></pre>
-			What we get here is a method (what the user wants from our webserver), where the user is trying to get the
-			file /differentiation.html. We also have the IP of the computer making the request just below, which
-			is used to identify who is trying to access your server. On top of that there are a few extra pieces of
-			data, such as the website URL (host), the browser being used (user-agent), and the language the website is loaded
-			in.<br>
-			So far this is not that crazy. None of this is personal or identifiable information. I can't tell who this
-			person is, where they live, or anything personal at all.
-			<h3>Request Logs</h3>
-			<div id="logs-container">Loading logs...</div>
-			<h3>Why Do Websites Need This Data?</h3>
-			This data is essential to webservers as it can help ban malicious people from bringing harm to
-			your website. Say a bad actor is accessing your webserver and leaving nasty
-			comments like "you smell." You probably don't want this person getting access to your server
-			files, or scaring other people away. So we want to block them while letting everyone else through. We can do this by IP banning them, where our webserver collects their request
-			and then refuses to serve any of its files, preventing them from being mean
-			to you or anyone else on your website.
-			<h2>Visitor Map</h2>
+					What we get here is a method (what the user wants from our webserver), and the path, which is the
+					file the user is trying to get, in this case /differentiation.html. We also have the IP of the computer
+					making the request, which is used to identify who is trying to access your server. On top of that there
+					are a few extra pieces of data, such as the website URL (host), the browser being used (user-agent), and
+					the language the website is loaded in.<br>
+					So far this is not that crazy. I can't tell who this
+					person is, where they live, or anything personal at all. The main concern would be the IP, which is legally
+					personally identifiable information (PII), where every person has their own unique IP, similar to someone's
+					government number (national insurance number / social security number), except instead of identifying a person
+					like a government ID, it identifies the machine you're on. You can't publicly share the IPs of everyone
+					accessing your website, so I've tried my best to keep any instance of someone's IP hidden on this page.
+					If you happen to find your IP or anyone else's being displayed on this page, please let me know and I'll try
+					to remove it as soon as possible.
+					<h3>Request Logs</h3>
+					A cleaned up version of the server log shown above can be found here:
+					<div id="logs-container">Loading logs...</div>
+					This is more similar to a database that an actual company might use.
+					<h3>Why Do Websites Need This Data?</h3>
+					This data is essential to webservers as it can help ban malicious people from bringing harm to
+					your website. Say a bad actor is accessing your webserver and leaving nasty
+					comments like "you smell." You probably don't want this person getting access to your server
+					files, or scaring other people away. So we want to block them while letting everyone else through. We can do
+					this
+					by IP banning them, where our webserver collects their request
+					and then refuses to serve any of its files, preventing them from being mean
+					to you or anyone else on your website.
 
-			First of all, we can get somebody's rough location using their IP. This is because internet service
-			providers (ISPs) are assigned IP blocks by regional registries, and this is all public information. Here
-			is a map showing the location of the last few people to visit this page:
-			<div id="visitor-map"></div>
-			This is a little bit scary, but the locations are very rough so it is not too wild. Still, it is valuable data. A simple example would be serving personalised ads based on location.<br>
+					<h2>
+						What Could Someone Do with Your Server Logs?
+					</h2>
+					So what can someone actually do with this data once they have it? At the very least, they can figure out
+					roughly where you're connecting from, and at worst, combine it with other data to build a much more
+					detailed picture of who you are. Let's break this down.
+
+					<h2>Visitor Map</h2>
+
+					First of all, we can get somebody's rough location using their IP. This is because internet service
+					providers (ISPs) are assigned IP blocks by regional registries, and this is all public information. Here
+					is a map showing the location of the last few people to visit this page:
+					<div id="visitor-map"></div>
+					This is a little bit scary, but the locations are very rough. These locations are somewhat accurate at
+					saying what city you may be from, but when it comes to your actual house or your precise location, it's
+					impossible to know just from your IP. Still, it is valuable data, and a simple example of how it gets used
+					is serving personalised ads based on location.<br>
+					But is it possible to get more personal information about an individual from their IP? What would you
+					need to do, and is it even legal?
+					<h2>Scary Databases</h2>
+					The way for someone to find out your actual address or get your name from your IP is if they already have
+					your IP stored alongside some personal information about you, like your address and name. You can't just
+					get any of this from your IP alone. But there are companies that already have this information. Think of
+					any website you've filled in a form with your name, address, or other details (social media, bank
+					accounts, your internet service provider). Did you fill that in on a webpage at some point? Well, that
+					company now has a database with your name, address, and IP. Most of the time these services are pretty
+					trustworthy, and this is honestly fine. The scary part is if they have a data leak, because then bad actors
+					can take that database, linking IPs to exact locations and names, and use it on you without ever having to
+					ask you for anything (theoretically).<br>
+
+					<h2>Conclusion</h2>
+					So, should you be worried every time you load a webpage? Not really. On its own, a server log is just a
+					handful of technical details that a website needs to actually work, and on this page that's roughly a
+					country or city, a browser, and a timestamp. The bigger risk isn't any single website logging your visit,
+					it's what happens when that data is combined with other databases that already know who you are, and what
+					happens if those databases get leaked. That's why, as developers, it's worth treating IPs and other
+					identifying details with the same care as passwords: collect only what you need, store it securely, and
+					avoid publishing it anywhere it doesn't need to be. Hopefully this page has given you a slightly clearer
+					picture of what's actually being shared every time you click a link, and why the people building these
+					systems take that responsibility seriously.
+				</section>
+			</div>
 		</div>
-	</div>
-</body>
-
+	</body>
 </html>
