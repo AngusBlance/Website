@@ -1,7 +1,7 @@
 from database.postgres.connection import DatabaseManager
 
 FAST_API_REQUESTS_SCHEMA = {
-    "full_name": "raw.requests.fast_api_requests",
+    "full_name": "raw.fast_api_requests",
     "columns": {
         "fast_api_request_id": {"type": "TEXT", "not_null": True, "primary_key": True},
         "method": {"type": "TEXT", "not_null": True},
@@ -11,6 +11,7 @@ FAST_API_REQUESTS_SCHEMA = {
         "body": {"type": "JSONB"},
         "query_params": {"type": "JSONB"},
         "client_host": {"type": "TEXT"},
+        "location": {"type": "JSONB"},
         "timestamp": {"type": "TIMESTAMPTZ", "default": "NOW()"},
     },
 }
