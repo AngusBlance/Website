@@ -1,13 +1,26 @@
+# Obsidian
 Obsidian_Vault/
 
-#python
+# Secrets
 .env
-__pycache__
+.env.*
+!.env.example
 
-#cpp
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+
+# C++
 a.out
+*.o
 
-#claude 
-.claude
+# Claude
+.claude/
 CLAUDE.md
 system-prompt.md
