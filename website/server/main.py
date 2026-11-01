@@ -52,16 +52,30 @@ def server_logging():
     return FileResponse(os.path.join(BASE_DIR, "server_logging.html"))
 
 
-@app.get("/api/{path:path}")
-async def proxy_postgrest(path: str, request: Request):
-    query_string = request.url.query
-    url = f"http://postgrest:3000/{path}"
-    if query_string:
-        url += f"?{query_string}"
+# Visitors are grouped by IP in the database so that IPs, headers and request
+# bodies never leave the server. Coordinates are rounded to city level.
+VISITORS_QUERY = """
+    SELECT
+        COUNT(*) AS "visits",
+        MIN(timestamp) AS "firstSeen",
+        MAX(timestamp) AS "lastSeen",
+        COALESCE(MAX(location->>'country'), '—') AS "country",
+        COALESCE(MAX(location->>'city'), '—') AS "city",
+        ROUND(AVG((location->>'lat')::numeric), 1) AS "lat",
+        ROUND(AVG((location->>'lon')::numeric), 1) AS "lon",
+        COALESCE((ARRAY_AGG(headers->>'user-agent' ORDER BY timestamp DESC))[1], '—') AS "userAgent"
+    FROM raw.fast_api_requests
+    WHERE path = '/server_logging.html'
+    GROUP BY ip
+    ORDER BY "lastSeen" DESC
+    LIMIT 10
+"""
 
-    async with httpx.AsyncClient() as client:
-        resp = await client.get(url)
-        return resp.json()
+
+@app.get("/api/visitors")
+def visitors():
+    with DatabaseManager() as db:
+        return db.select(VISITORS_QUERY)
 
 
 @app.middleware("http")
