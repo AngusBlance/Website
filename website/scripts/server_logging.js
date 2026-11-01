@@ -53,40 +53,25 @@ async function initMap(visitors) {
   svg.call(zoom);
 }
 
-function groupByIp(logs) {
-  const map = new Map();
-  for (const log of logs) {
-    const key = log.ip;
-    if (!map.has(key)) {
-      map.set(key, {
-        firstSeen: log.timestamp,
-        lastSeen: log.timestamp,
-        visits: 0,
-        country: log.location?.country || '—',
-        city: log.location?.city || '—',
-        lat: log.location?.lat ?? null,
-        lon: log.location?.lon ?? null,
-        userAgent: log.headers?.['user-agent'] || '—',
-      });
-    }
-    const entry = map.get(key);
-    entry.visits++;
-    if (log.timestamp < entry.firstSeen) entry.firstSeen = log.timestamp;
-    if (log.timestamp > entry.lastSeen) entry.lastSeen = log.timestamp;
-  }
-  return Array.from(map.values())
-    .sort((a, b) => new Date(b.lastSeen) - new Date(a.lastSeen))
-    .slice(0, 10);
+// User agents come straight from request headers, so escape them before
+// putting them into the page.
+function escapeHtml(value) {
+  return String(value)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
 }
 
 async function genarateMapAndTable() {
   try {
-    const response = await fetch('/api/fast_api_requests?path=eq./server_logging.html&order=timestamp.desc&limit=500');
-    const data = await response.json();
-    if (!Array.isArray(data)) {
-      throw new Error(`Unexpected response: ${JSON.stringify(data)}`);
+    // The server groups visitors by IP itself and never sends the IPs.
+    const response = await fetch('/api/visitors');
+    const visitors = await response.json();
+    if (!Array.isArray(visitors)) {
+      throw new Error(`Unexpected response: ${JSON.stringify(visitors)}`);
     }
-    const visitors = groupByIp(data);
     initTable(visitors);
     await initMap(visitors);
   } catch (error) {
@@ -112,9 +97,9 @@ function initTable(visitors) {
       <td>${v.visits}</td>
       <td>${new Date(v.firstSeen).toLocaleString()}</td>
       <td>${new Date(v.lastSeen).toLocaleString()}</td>
-      <td>${v.country}</td>
-      <td>${v.city}</td>
-      <td>${v.userAgent}</td>
+      <td>${escapeHtml(v.country)}</td>
+      <td>${escapeHtml(v.city)}</td>
+      <td>${escapeHtml(v.userAgent)}</td>
     </tr>`;
   });
 
