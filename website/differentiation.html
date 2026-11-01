@@ -233,6 +233,18 @@ python3 forward_differentiation.py
 					due to the __add__ method. So our final answer is ForwardAutoDiff(26,12), where 26 is \(f(3)\) and 12, the dual
 					part, is the EXACT derivative \(f'(3) = 2(3) + 6\)!!! All through simple maths instructions alone.
 				</section>
+				<section class="text" id="summary">
+					<h2>Summary</h2>
+					<ul>
+						<li><b>Finite differences</b> estimate the derivative using a small, fixed h. They are simple and
+							fast, but always carry truncation error, and rounding error takes over if h is made too small.</li>
+						<li><b>Forward mode automatic differentiation</b> carries a dual part alongside every value, using
+							\(\epsilon^2 = 0\), so the derivative comes out exactly (up to floating point precision) with no h
+							to choose.</li>
+						<li>For \(f(x) = x^2 + 6x - 1\) at \(x = 3\), finite differences only approximate the derivative,
+							while forward mode gives \(f(3) = 26\) and \(f'(3) = 12\) in a single pass.</li>
+					</ul>
+				</section>
 			</div>
 		</div>
 	</body>
