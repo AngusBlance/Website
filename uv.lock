@@ -787,6 +787,7 @@ dependencies = [
     { name = "fastapi", extra = ["standard"] },
     { name = "psycopg2-binary" },
     { name = "pytest" },
+    { name = "python-dotenv" },
     { name = "uvicorn" },
 ]
 
@@ -795,6 +796,7 @@ requires-dist = [
     { name = "fastapi", extras = ["standard"] },
     { name = "psycopg2-binary" },
     { name = "pytest" },
+    { name = "python-dotenv" },
     { name = "uvicorn" },
 ]
 
