@@ -77,7 +77,7 @@ def body_fields(body: bytes, content_type: str | None) -> dict[str, Any]:
     try:
         fields["body"] = json.loads(body)
     except (json.JSONDecodeError, UnicodeDecodeError):
-        # Postgres JSONB can't store NUL characters
+        # NUL characters are dropped: they break JSON text in most tools downstream
         fields["body"] = body.decode("utf-8", errors="replace").replace("\x00", "")
     return fields
 
@@ -172,7 +172,7 @@ async def capture(request: Request, call_next, persist) -> Response:
     """Middleware body: handle the request, then log it with `persist(record)` in the background.
 
     `persist` is an async function taking the record dict (main.py passes one that writes to
-    Postgres). Any problem building the record is logged; the response is always returned.
+    SQLite, see store.py). Any problem building the record is logged; the response is always returned.
     """
     started_at = datetime.now(timezone.utc)
     t0 = time.perf_counter()

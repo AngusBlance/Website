@@ -1,7 +1,7 @@
 """Request/response capture (website/server/request_log.py), through the real app.
 
-The database is replaced by a list: `persist` is swapped for one that records the row
-instead of writing it, so no Postgres or network is needed.
+`persist` is swapped for one that records the row in a list instead of writing it, so
+no network is needed; the SQLite file is a temporary one (see conftest.py).
 """
 
 import asyncio
@@ -13,19 +13,7 @@ import pytest
 from fastapi.testclient import TestClient
 
 import website.server.main as main
-from database.postgres.tables import fast_api_requests
-from website.server import request_log
-
-
-class FakeDB:
-    def __enter__(self):
-        return self
-
-    def __exit__(self, *args):
-        pass
-
-    def select(self, *args, **kwargs):
-        return []
+from website.server import request_log, store
 
 
 @pytest.fixture
@@ -36,8 +24,6 @@ def logged(monkeypatch):
     async def persist(record):
         rows.append(record)
 
-    monkeypatch.setattr(main, "DatabaseManager", FakeDB)
-    monkeypatch.setattr(main.tables.fast_api_requests, "create", lambda db: None)
     monkeypatch.setattr(main, "persist", persist)
     return rows
 
@@ -161,34 +147,4 @@ def test_logging_failures_never_break_pages(logged, monkeypatch):
 def test_every_captured_field_is_a_table_column(logged):
     with client() as c:
         c.get("/")
-    columns = set(fast_api_requests.FAST_API_REQUESTS_SCHEMA["columns"])
-    assert set(only(logged)) - {"location"} <= columns
-
-
-def test_write_row_wraps_json_columns(monkeypatch):
-    appended = {}
-
-    class DB(FakeDB):
-        def append(self, table, row):
-            appended.update(table=table, row=row)
-
-    monkeypatch.setattr(main, "DatabaseManager", DB)
-    monkeypatch.setattr(main.tables.fast_api_requests, "next_id", lambda db: "req_00000001")
-    main.write_row({"method": "GET", "path": "/", "body": "plain text", "headers": {"a": "b"}, "status_code": 200})
-    row = appended["row"]
-    assert appended["table"] == "raw.fast_api_requests" and row["fast_api_request_id"] == "req_00000001"
-    assert type(row["body"]).__name__ == "Json" and type(row["headers"]).__name__ == "Json"
-    assert row["status_code"] == 200
-
-
-def test_add_missing_columns_sql():
-    sql = []
-
-    class DB:
-        def execute(self, query, params=()):
-            sql.append(query)
-
-    from database.postgres.connection import DatabaseManager
-    DatabaseManager.add_missing_columns(DB(), fast_api_requests.FAST_API_REQUESTS_SCHEMA)
-    assert 'ALTER TABLE "raw"."fast_api_requests" ADD COLUMN IF NOT EXISTS "status_code" INTEGER' in sql
-    assert not any("fast_api_request_id" in q for q in sql)  # the primary key is never re-added
+    assert set(only(logged)) <= set(store.COLUMNS)
