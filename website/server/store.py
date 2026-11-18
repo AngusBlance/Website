@@ -13,7 +13,7 @@
            ▲                        │                                          │
            └──── visitors (view) ◀──┴──────────── gold_visitors ◀──daily copy──┘
 
-The website_sqlite_sync DAG (database-projects) does the daily copy, the gold refresh and
+The nightly chain in database-projects (raw_daily ... publish_daily) does the daily copy, the gold refresh and
 the pruning; this file owns the schema. Visitors are pseudonymous: visitor_id() hashes
 the IP exactly like the lakehouse does, so gold and recent rows line up.
 """

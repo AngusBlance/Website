@@ -41,7 +41,7 @@ website ──logs every request──▶ fast_api_requests ──daily──▶
   merged per pseudonymous visitor (hashed IP, the same hash the lakehouse uses). The page's
   table and map read it through `/api/visitors`.
 
-The database platform's `website_sqlite_sync` DAG (in `database-projects`) runs daily. It copies new rows to
+The database platform's nightly chain (`raw_daily` → … → `publish_daily`, in `database-projects`) copies new rows to
 raw storage, rebuilds bronze → silver → gold, replaces `gold_visitors`, and deletes requests that gold
 includes **and** that are older than 2 days. The view is correct at every moment, even mid-sync: nothing is
 counted twice or missed.
