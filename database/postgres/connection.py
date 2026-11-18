@@ -82,3 +82,19 @@ class DatabaseManager:
         table_name = parts[-1]
         query = f'CREATE TABLE IF NOT EXISTS "{schema_name}"."{table_name}" ({", ".join(columns)})'
         self.execute(query)
+
+    def add_missing_columns(self, schema: dict) -> None:
+        """Add any column in `schema` the table doesn't have yet (safe to run on every start).
+
+        CREATE TABLE IF NOT EXISTS never changes an existing table, so new columns are added
+        here instead. They are always nullable: existing rows have no value for them.
+        """
+        parts = schema["full_name"].split(".")
+        table_ref = f'"{parts[0]}"."{parts[-1]}"'
+        for col_name, col_def in schema["columns"].items():
+            if col_def.get("primary_key"):
+                continue
+            col_sql = f'"{col_name}" {col_def["type"]}'
+            if col_def.get("default"):
+                col_sql += f" DEFAULT {col_def['default']}"
+            self.execute(f"ALTER TABLE {table_ref} ADD COLUMN IF NOT EXISTS {col_sql}")
