@@ -1,9 +1,4 @@
 services:
-  db:
-    restart: "no"
-    ports:
-      - "127.0.0.1:5432:5432"
-
   website:
     restart: "no"
     volumes:
@@ -11,9 +6,4 @@ services:
       - /app/.venv
     environment:
       - PYTHONDONTWRITEBYTECODE=1
-    command: ["uv", "run", "--no-sync", "uvicorn", "website.server.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
-
-  postgrest:
-    restart: "no"
-    ports:
-      - "127.0.0.1:3000:3000"
+    command: ["/app/.venv/bin/uvicorn", "website.server.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]

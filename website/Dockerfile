@@ -12,4 +12,4 @@ COPY . .
 
 EXPOSE 8000
 
-CMD ["uv", "run", "--no-sync", "uvicorn", "website.server.main:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["/app/.venv/bin/uvicorn", "website.server.main:app", "--host", "0.0.0.0", "--port", "8000"]

@@ -1,47 +1,13 @@
 services:
-  db:
-    image: postgres:17-alpine
-    restart: unless-stopped
-    environment:
-      POSTGRES_USER: ${DB_USER}
-      POSTGRES_PASSWORD: ${DB_PASSWORD}
-      POSTGRES_DB: ${DB_NAME}
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-      - ./database/init:/docker-entrypoint-initdb.d
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}"]
-      interval: 2s
-      timeout: 5s
-      retries: 10
-
   website:
     build:
       context: .
       dockerfile: website/Dockerfile
     restart: unless-stopped
+    # Runs as the host user so the SQLite file in DATA_DIR is owned by it, and the
+    # database platform's Airflow (same uid) can read and update it.
+    user: "${UID:-1000}:${GID:-1000}"
     ports:
       - "127.0.0.1:8000:8000"
-    environment:
-      - DB_HOST=${DB_HOST}
-      - DB_PORT=${DB_PORT}
-      - DB_USER=${DB_USER}
-      - DB_PASSWORD=${DB_PASSWORD}
-      - DB_NAME=${DB_NAME}
-    depends_on:
-      db:
-        condition: service_healthy
-
-  postgrest:
-    image: postgrest/postgrest
-    restart: unless-stopped
-    environment:
-      PGRST_DB_URI: "host=db port=${DB_PORT} user=${DB_USER} password=${DB_PASSWORD} dbname=${DB_NAME}"
-      PGRST_DB_SCHEMA: raw
-      PGRST_DB_ANON_ROLE: ${DB_USER}
-    depends_on:
-      db:
-        condition: service_healthy
-
-volumes:
-  postgres_data:
+    volumes:
+      - ${DATA_DIR:-./data}:/app/data   # website.db (see website/server/store.py)
