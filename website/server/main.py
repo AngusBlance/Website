@@ -1,4 +1,4 @@
-import json
+import asyncio
 import logging
 import os
 from contextlib import asynccontextmanager
@@ -7,6 +7,7 @@ from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 from psycopg2.extras import Json
 from database import DatabaseManager, tables
+from website.server import request_log
 import uvicorn
 import httpx
 
@@ -18,8 +19,9 @@ logger = logging.getLogger(__name__)
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     with DatabaseManager() as db:
-        tables.fast_api_requests.create(db)
+        tables.fast_api_requests.create(db)  # creates the table, or adds columns it's missing
     yield
+    await request_log.wait_for_logs()  # finish writing logs of the last requests before exiting
 
 
 app = FastAPI(lifespan=lifespan)
@@ -84,46 +86,36 @@ def visitors():
 
 @app.middleware("http")
 async def log_requests(request: Request, call_next):
+    # Logs the request and its response after the response is sent; see request_log.py
+    return await request_log.capture(request, call_next, persist)
+
+
+async def lookup_location(ip: str | None) -> dict | None:
+    """ip-api.com lookup for the visitor's IP (the first address in X-Forwarded-For)."""
+    first = ip.split(",")[0].strip() if ip else None
+    if not first:
+        return None
     try:
-        await _log_request(request)
+        async with httpx.AsyncClient() as client:
+            resp = await client.get(f"http://ip-api.com/json/{first}", timeout=3)
+            return resp.json()
     except Exception:
-        # A logging failure must never take down the page being requested.
-        logger.exception("Failed to log %s %s", request.method, request.url.path)
-    return await call_next(request)
+        return None
 
 
-async def _log_request(request: Request) -> None:
-    body = await request.body()
-
-    try:
-        body_json = json.loads(body) if body else None
-    except (json.JSONDecodeError, UnicodeDecodeError):
-        # Postgres JSONB cannot store NUL characters.
-        body_json = body.decode("utf-8", errors="replace").replace("\x00", "")
-
-    ip = request.headers.get("x-forwarded-for") or (request.client.host if request.client else None)
-    location = None
-    if ip:
-        try:
-            async with httpx.AsyncClient() as client:
-                resp = await client.get(f"http://ip-api.com/json/{ip}", timeout=3)
-                location = resp.json()
-        except Exception:
-            pass
-
+def write_row(record: dict) -> None:
+    """Insert one request into raw.fast_api_requests (blocking; run in a thread)."""
+    jsonb = tables.fast_api_requests.JSONB_COLUMNS
+    row = {k: (Json(v) if k in jsonb and v is not None else v) for k, v in record.items()}
     with DatabaseManager() as db:
-        log_entry = {
-            "fast_api_request_id": tables.fast_api_requests.next_id(db),
-            "method": request.method,
-            "path": request.url.path,
-            "ip": ip,
-            "headers": dict(request.headers),
-            "body": Json(body_json) if body_json is not None else None,
-            "query_params": dict(request.query_params),
-            "client_host": ip,
-            "location": location,
-        }
-        db.append("raw.requests.fast_api_requests", log_entry)
+        row["fast_api_request_id"] = tables.fast_api_requests.next_id(db)
+        db.append("raw.fast_api_requests", row)
+
+
+async def persist(record: dict) -> None:
+    """Runs in the background after the response: location lookup, then the insert."""
+    record["location"] = await lookup_location(record.get("ip"))
+    await asyncio.to_thread(write_row, record)
 
 
 if __name__ == "__main__":
